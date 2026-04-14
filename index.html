@@ -750,9 +750,131 @@ input,select,textarea{font-family:var(--font);}
   .rp-name{font-size:13px;}
   .rp-val{font-size:14px;font-weight:700;}
   .rp-total-val{font-size:24px;}
+
+  /* ─── DAY CARDS (execution mode) ─── */
+  .mdc{
+    background:var(--s1);border:1px solid var(--b1);
+    border-radius:14px;margin-bottom:10px;overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mdc-hd{
+    display:flex;align-items:center;padding:14px 16px;gap:12px;
+    cursor:pointer;min-height:64px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mdc-hd:active{background:var(--s2);}
+  .mdc-date{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0;}
+  .mdc-dow{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);}
+  .mdc-num{font-size:26px;font-weight:700;line-height:1;color:var(--t1);}
+  .mdc-info{flex:1;min-width:0;}
+  .mdc-status{font-size:13px;font-weight:500;color:var(--t2);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mdc-shifts{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+  .mdc-spill{
+    display:inline-flex;align-items:center;gap:3px;
+    padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:600;
+    background:var(--s2);color:var(--t3);
+  }
+  .mdc-spill.ok{background:rgba(45,212,160,.1);color:var(--green);}
+  .mdc-spill.warn{background:rgba(240,106,106,.12);color:var(--red);}
+  .mdc-spill-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+  .mdc-badges{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+  .mdc-badge-we{font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:var(--yellow-dim);color:var(--yellow);}
+  .mdc-badge-ph{font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;background:var(--red-dim);color:var(--red);}
+  .mdc-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .mdc-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .mdc-indicator.complete{background:var(--green);box-shadow:0 0 6px rgba(45,212,160,.5);}
+  .mdc-indicator.incomplete{background:var(--red);}
+  .mdc-indicator.empty{background:var(--b2);}
+  .mdc-chevron{width:18px;height:18px;color:var(--t3);flex-shrink:0;transition:transform .2s;}
+  .mdc.expanded .mdc-chevron{transform:rotate(90deg);}
+  .mdc-body{display:none;border-top:1px solid var(--b1);}
+  .mdc.expanded .mdc-body{display:block;}
+  .mdc-shift-blk{padding:14px 16px;border-bottom:1px solid var(--b1);}
+  .mdc-shift-blk:last-child{border-bottom:none;}
+  .mdc-shift-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .mdc-shift-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .mdc-shift-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);flex:1;}
+  .mdc-shift-val{font-size:11px;color:var(--t3);font-variant-numeric:tabular-nums;}
+  .mdc-shift-warn{font-size:11px;color:var(--red);font-weight:600;display:flex;align-items:center;gap:4px;margin-bottom:6px;}
+  .mdc-doc-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1);min-height:48px;}
+  .mdc-doc-row:last-of-type{border-bottom:none;}
+  .mdc-doc-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+  .mdc-doc-name{flex:1;font-size:14px;font-weight:500;color:var(--t1);}
+  .mdc-doc-rm{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--t3);border:none;background:none;border-radius:var(--r-sm);font-size:20px;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;}
+  .mdc-doc-rm:active{color:var(--red);background:var(--red-dim);}
+  .mdc-add-btn{
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    width:100%;padding:13px;border:1.5px dashed var(--b2);border-radius:10px;
+    background:transparent;color:var(--accent);font-size:14px;font-weight:500;
+    font-family:var(--font);min-height:48px;margin-top:8px;
+    -webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;
+  }
+  .mdc-add-btn:active{border-color:var(--accent);background:var(--accent-dim);}
+  .mdc-add-btn svg{width:15px;height:15px;}
+  .mdc-vacant{font-size:13px;color:var(--t3);font-style:italic;padding:8px 0;}
+
+  /* ─── ACCORDION for settings ─── */
+  .acc-item{background:var(--s1);border:1px solid var(--b1);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+  .acc-hd{display:flex;align-items:center;padding:16px;cursor:pointer;gap:10px;min-height:56px;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;text-align:left;font-family:var(--font);}
+  .acc-hd:active{background:var(--s2);}
+  .acc-icon{font-size:17px;flex-shrink:0;}
+  .acc-lbl{flex:1;font-size:15px;font-weight:600;color:var(--t1);}
+  .acc-arrow{width:18px;height:18px;color:var(--t3);flex-shrink:0;transition:transform .2s;}
+  .acc-item.open .acc-arrow{transform:rotate(180deg);}
+  .acc-body{display:none;padding:0 16px 16px;border-top:1px solid var(--b1);}
+  .acc-item.open .acc-body{display:block;}
+  .acc-body .sc-section-ttl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 10px;}
+  .cov-cards{display:flex;flex-direction:column;gap:8px;}
+  .cov-card{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:12px;}
+  .cov-card-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .cov-card-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .cov-card-name{font-size:13px;font-weight:600;color:var(--t1);}
+  .cov-card-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12.5px;color:var(--t2);}
+  .cov-card-row .num-input{width:56px;height:36px;font-size:13px;}
+  .val-cards{display:flex;flex-direction:column;gap:8px;}
+  .val-card{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:12px;}
+  .val-card-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .val-card-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .val-card-name{font-size:13px;font-weight:600;color:var(--t1);flex:1;}
+  .val-card-edit{font-size:12px;color:var(--accent);background:none;border:none;font-family:var(--font);cursor:pointer;padding:5px 10px;border-radius:var(--r-sm);min-height:36px;}
+  .val-card-vals{display:flex;gap:6px;margin-top:4px;}
+  .val-badge{flex:1;text-align:center;padding:7px 4px;background:var(--s3);border-radius:var(--r-sm);}
+  .val-badge-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;}
+  .val-badge-val{font-size:12px;font-weight:600;color:var(--t1);font-variant-numeric:tabular-nums;}
+  .sector-acc-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--b1);min-height:44px;}
+  .sector-acc-row:last-of-type{border-bottom:none;}
+  .sector-acc-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);}
+  .sector-acc-dot.active{background:var(--green);}
+  .sector-acc-name{flex:1;font-size:14px;font-weight:500;color:var(--t1);}
+  .sector-acc-btn{font-size:12px;color:var(--accent);background:none;border:none;font-family:var(--font);cursor:pointer;padding:6px 10px;min-height:36px;border-radius:var(--r-sm);}
+
+  /* ─── Mobile settings container ─── */
+  #cfg-scroll{display:none !important;}
+  #mob-cfg{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:12px 14px 24px;-webkit-overflow-scrolling:touch;}
+  #view-cfg{display:flex;flex-direction:column;}
+
+  /* ─── Alloc panel fullscreen on mobile ─── */
+  #alloc-panel{
+    position:fixed;inset:0;width:100% !important;
+    transform:translateY(100%);
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    border-radius:0;border:none;box-shadow:none;
+  }
+  #alloc-panel.open{transform:translateY(0);}
+  .ap-hd{padding:16px 16px 12px;}
+  .ap-close{font-size:14px;min-height:40px;margin-bottom:10px;}
+  .ap-body{padding:16px 16px 80px;-webkit-overflow-scrolling:touch;}
+  .ap-shift-blk{margin-bottom:22px;}
+  .ap-slot{padding:13px 12px;min-height:52px;}
+  .ap-slot-name{font-size:15px;}
+  .ap-add{padding:13px;min-height:52px;font-size:14px;border-radius:10px;}
+  .ap-slot-rm{opacity:1 !important;color:var(--t3);}
 }
 
-@media(min-width:769px){#view-mob{display:none !important;}}
+@media(min-width:769px){
+  #view-mob{display:none !important;}
+  #mob-cfg{display:none !important;}
+}
 
 
 /* ═══════════ AUTH LAYER ═══════════ */
@@ -1143,6 +1265,7 @@ input,select,textarea{font-family:var(--font);}
 
   <!-- MOBILE LIST VIEW -->
   <div id="view-mob"><div id="mob-days"></div></div>
+  <div id="mob-cfg"></div>
 
   <!-- SETTINGS VIEW — two-column layout -->
   <div id="view-cfg">
@@ -1884,7 +2007,7 @@ function switchSector(id){
   if(cal){ cal.destroy(); cal=null; }
   renderAll();
   if(window.innerWidth>=769) initCal();
-  else mobNav('escala');  // reset mobile to escala view
+  else { mobNav('escala'); renderMobDays(); }  // reset mobile
   renderTopbar();
   renderSectorContextLabels();
   const sec=curSector();
@@ -2227,7 +2350,7 @@ function confirmAlloc(){
   saveS(); refetch(); renderRightPanel(); renderSidebar();
   updateCalendarAlerts();
   renderApBody(allocCtx.date);
-  if(window.innerWidth<769) renderMobDays();
+  if(window.innerWidth<769){ renderMobDays(); closeAllocPanel(); }
   closeModal('m-alloc');
   toast('Profissional escalado!','ok');
 }
@@ -2239,7 +2362,7 @@ function rmAlloc(id,ds){
   updateCalendarAlerts();
   renderApBody(ds);
   if(window.innerWidth<769) renderMobDays();
-  toast('Removido do turno.','info');
+  toast('Removido.','info');
 }
 
 // ═══════════════════════════════════════════
@@ -2490,6 +2613,7 @@ function onMonCh(){
   closeAllocPanel();
   if(cal) cal.gotoDate(`${S.currentYear}-${String(S.currentMonth).padStart(2,'0')}-01`);
   renderAll();
+  if(window.innerWidth<769) mobNav('escala');
 }
 
 function showView(v){
@@ -2502,14 +2626,153 @@ function showView(v){
   if(v==='escala') setTimeout(()=>{if(cal)cal.updateSize();},60);
 }
 
+
+// ═══════════════════════════════════════════
+//  MOBILE SETTINGS — ACCORDION
+// ═══════════════════════════════════════════
+function renderMobCfg(){
+  const el=document.getElementById('mob-cfg');
+  if(!el) return;
+  const sched=getSched(), fin=curFin();
+  const hosp=curHospital();
+
+  // ── Accordion item builder ──
+  function acc(id,icon,label,bodyFn){
+    return`<div class="acc-item" id="acc-${id}">
+      <button class="acc-hd" onclick="toggleAcc('${id}')">
+        <span class="acc-icon">${icon}</span>
+        <span class="acc-lbl">${label}</span>
+        <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="acc-body">${bodyFn()}</div>
+    </div>`;
+  }
+
+  // ── Section 1: Regras ──
+  const regrasBody=()=>`
+    <div class="sc-section-ttl" style="margin-top:14px">Regra da 5ª semana</div>
+    <label class="cfg-toggle" style="padding:8px 0">
+      <input type="checkbox" id="chk-quinta-mob" ${hosp.considerar_quinta_semana!==false?'checked':''} onchange="saveMobHospitalCfg()">
+      <div>
+        <div class="cfg-toggle-lbl">Considerar 5ª semana</div>
+        <div class="cfg-toggle-sub">Se desativado, limita cada dia da semana a 4 ocorrências</div>
+      </div>
+    </label>`;
+
+  // ── Section 2: Cobertura ──
+  const coberturaBody=()=>{
+    const cob=hosp.cobertura||{dia_util:{manha:1,tarde:1,noite:1},fim_semana:{manha:1,tarde:1,noite:1}};
+    return`<div class="sc-section-ttl" style="margin-top:14px">Cobertura mínima</div>
+    <div class="cov-cards">${SHIFTS.map(s=>`
+      <div class="cov-card">
+        <div class="cov-card-hd">
+          <span class="cov-card-dot" style="background:${SC[s]}"></span>
+          <span class="cov-card-name">${SL[s]}</span>
+        </div>
+        <div class="cov-card-row"><span>Dias úteis</span><input class="num-input" type="number" min="0" max="20" value="${cob.dia_util?.[s]??1}" onchange="saveCoberturaField('${s}','dia_util',this.value)"></div>
+        <div class="cov-card-row"><span>Fim de semana</span><input class="num-input" type="number" min="0" max="20" value="${cob.fim_semana?.[s]??1}" onchange="saveCoberturaField('${s}','fim_semana',this.value)"></div>
+      </div>`).join('')}</div>`;
+  };
+
+  // ── Section 3: Valores ──
+  const valoresBody=()=>{
+    const finLock=fin?`<div class="fin-banner show" style="margin-bottom:12px"><span style="font-size:15px">🔒</span><div style="font-size:12px;color:var(--t2)"><strong style="color:var(--red)">Mês finalizado.</strong> Valores imutáveis.</div></div>`:'';
+    return finLock+`<div class="sc-section-ttl" style="margin-top:${fin?'0':'14px'}">Valores por turno — ${MONTHS[S.currentMonth-1]} ${S.currentYear}</div>
+    <div class="val-cards">${SHIFTS.map(s=>{
+      const v=(sched.values||{})[s]||{dia_util:350,fim_semana:500,feriado:700};
+      return`<div class="val-card">
+        <div class="val-card-hd">
+          <span class="val-card-dot" style="background:${SC[s]}"></span>
+          <span class="val-card-name">${SL[s]}</span>
+          ${fin?'':`<button class="val-card-edit" onclick="openValModal('${s}')">Editar</button>`}
+        </div>
+        <div class="val-card-vals">
+          <div class="val-badge"><div class="val-badge-lbl">Útil</div><div class="val-badge-val">R$ ${fmt(v.dia_util)}</div></div>
+          <div class="val-badge"><div class="val-badge-lbl">F. Sem</div><div class="val-badge-val">R$ ${fmt(v.fim_semana)}</div></div>
+          <div class="val-badge"><div class="val-badge-lbl">Feriado</div><div class="val-badge-val">R$ ${fmt(v.feriado)}</div></div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  };
+
+  // ── Section 4: Setores ──
+  const setoresBody=()=>`
+    <div class="sc-section-ttl" style="margin-top:14px">Setores</div>
+    ${S.sectors.map(s=>`
+      <div class="sector-acc-row">
+        <span class="sector-acc-dot ${s.id===S.currentSectorId?'active':''}"></span>
+        <span class="sector-acc-name">${s.name}${s.id===S.currentSectorId?' <span style="font-size:10px;color:var(--t3)">(ativo)</span>':''}</span>
+        <button class="sector-acc-btn" onclick="setSector('${s.id}');renderMobCfg()">Selecionar</button>
+        <button class="sector-acc-btn" onclick="openSectorModal('${s.id}')">Editar</button>
+      </div>`).join('')}
+    <button class="mdc-add-btn" style="margin-top:10px" onclick="openSectorModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Adicionar setor
+    </button>`;
+
+  // ── Section 5: Profissionais ──
+  const profBody=()=>`
+    <div class="sc-section-ttl" style="margin-top:14px">Profissionais</div>
+    ${S.doctors.map(d=>`
+      <div class="sector-acc-row">
+        <div class="mdc-doc-av" style="background:${avColor(d.id)};width:28px;height:28px;font-size:10px">${initials(d.name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:500;color:${d.active?'var(--t1)':'var(--t3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div>
+          ${d.specialty?`<div style="font-size:11px;color:var(--t3)">${d.specialty}</div>`:''}
+        </div>
+        <button class="sector-acc-btn" onclick="openDocModal('${d.id}')">Editar</button>
+      </div>`).join('')}
+    <button class="mdc-add-btn" style="margin-top:10px" onclick="openDocModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Adicionar profissional
+    </button>`;
+
+  el.innerHTML=
+    acc('regras','⚙️','Regras',regrasBody)+
+    acc('cobertura','📊','Cobertura',coberturaBody)+
+    acc('valores','💰','Valores',valoresBody)+
+    acc('setores','🏥','Setores',setoresBody)+
+    acc('profissionais','👨‍⚕️','Profissionais',profBody);
+}
+
+function toggleAcc(id){
+  const el=document.getElementById('acc-'+id);
+  if(!el) return;
+  el.classList.toggle('open');
+}
+
+function saveMobHospitalCfg(){
+  const chk=document.getElementById('chk-quinta-mob');
+  if(!chk) return;
+  curHospital().considerar_quinta_semana=chk.checked;
+  // Sync desktop checkbox
+  const deskChk=document.getElementById('chk-quinta');
+  if(deskChk) deskChk.checked=chk.checked;
+  saveS();
+  refetch();
+  renderRightPanel();
+  renderMobDays();
+  toast('Configuração salva!','ok');
+}
+
 function mobNav(sec){
   mobSection=sec;
   ['escala','valores','resumo'].forEach(s=>document.getElementById(`bn-${s}`)?.classList.toggle('active',s===sec));
   const mob=document.getElementById('view-mob');
   const cfg=document.getElementById('view-cfg');
+  const mobCfg=document.getElementById('mob-cfg');
+  const isMob=window.innerWidth<769;
   mob.classList.toggle('show',sec==='escala');
-  cfg.style.display=sec==='valores'?'flex':'none';
-  if(sec==='valores') renderHospitalCfg();
+  // On mobile: use accordion cfg; on desktop: use normal grid
+  if(isMob){
+    cfg.style.display='none';
+    if(mobCfg) mobCfg.style.display=sec==='valores'?'flex':'none';
+    if(sec==='valores') renderMobCfg();
+  } else {
+    if(mobCfg) mobCfg.style.display='none';
+    cfg.style.display=sec==='valores'?'flex':'none';
+    if(sec==='valores') renderHospitalCfg();
+  }
   if(sec==='resumo') openResumoModal();
   if(sec==='escala') renderMobDays();
 }
@@ -2724,6 +2987,8 @@ function renderMobDays(){
   const y=S.currentYear, m=S.currentMonth;
   const last=new Date(y,m,0).getDate();
   const sched=getSched(), ro=curFin();
+  const plusSvg=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
+  const chevSvg=`<svg class="mdc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`;
   let html='';
   for(let d=1;d<=last;d++){
     const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -2731,36 +2996,98 @@ function renderMobDays(){
     const dow=new Date(y,m-1,d).getDay();
     const type=dayType(ds,sched);
     const hol=sched.holidays?.find(h=>h.date===ds);
-    html+=`<div class="md-card">
-      <div class="md-hd">
-        <div class="md-num">${d}</div>
-        <div class="md-dow">${DAYS[dow]}</div>
-        ${type==='fim_semana'?'<div class="md-badge md-we">Fim de semana</div>':''}
-        ${hol?`<div class="md-badge md-ph">🎉 ${hol.name}</div>`:''}
-      </div>`;
+    const isToday=ds===`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')}`;
+    // Status per shift
+    const shiftStatus=SHIFTS.map(sh=>{
+      const cov=coverageInfo(ds,sh,da);
+      const count=da.filter(a=>a.shift===sh).length;
+      return{sh,count,cov};
+    });
+    const hasAlert=shiftStatus.some(s=>s.cov);
+    const allFull=!hasAlert && shiftStatus.every(s=>s.count>0);
+    const allEmpty=shiftStatus.every(s=>s.count===0);
+    const indicatorClass=allEmpty?'empty':allFull?'complete':'incomplete';
+    // Shift pills summary
+    const pills=shiftStatus.map(({sh,count,cov})=>{
+      const cls=cov?'warn':count>0?'ok':'';
+      const lbl=SL[sh].substring(0,4);
+      return `<span class="mdc-spill ${cls}"><span class="mdc-spill-dot"></span>${lbl} ${count}</span>`;
+    }).join('');
+    // Status text
+    const totalDocs=da.length;
+    const statusTxt=ro?`${totalDocs} profissional${totalDocs!==1?'s':''}`:
+                     hasAlert?'⚠ Cobertura incompleta':
+                     allEmpty?'Nenhum escalado':
+                     `${totalDocs} profissional${totalDocs!==1?'s':''}`;
+    // Badge row
+    const badgeRow=(type==='fim_semana'||hol)?`<div class="mdc-badges">
+      ${type==='fim_semana'?'<span class="mdc-badge-we">Fim de semana</span>':''}
+      ${hol?`<span class="mdc-badge-ph">🎉 ${hol.name}</span>`:''}
+    </div>`:'';
+    html+=`<div class="mdc" id="mdc-${ds}">
+      <div class="mdc-hd" onclick="toggleMdc('${ds}')">
+        <div class="mdc-date">
+          <span class="mdc-dow">${['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][dow]}</span>
+          <span class="mdc-num" style="${isToday?'color:var(--accent)':''}">${d}</span>
+        </div>
+        <div class="mdc-info">
+          <div class="mdc-status">${statusTxt}</div>
+          <div class="mdc-shifts">${pills}</div>
+          ${badgeRow}
+        </div>
+        <div class="mdc-right">
+          <span class="mdc-indicator ${indicatorClass}"></span>
+          ${chevSvg}
+        </div>
+      </div>
+      <div class="mdc-body">`;
+    // Shift blocks inside expanded card
     SHIFTS.forEach(shift=>{
       const sa=da.filter(a=>a.shift===shift);
       sa.sort((a,b)=>getDocInfo(a.doctorId,sched).name.localeCompare(getDocInfo(b.doctorId,sched).name,'pt-BR'));
       const cov=coverageInfo(ds,shift,da);
-      html+=`<div class="md-srow">
-        <div class="md-slbl">${SL[shift].substring(0,4)}</div>
-        <div class="md-sdocs">`;
-      if(sa.length===0){
-        html+=ro?`<span class="md-empty">Vago</span>`
-              :`<button class="md-add" onclick="openAllocPanel('${ds}');setTimeout(()=>openAllocModal('${ds}','${shift}'),30)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Escalar profissional</button>`;
+      const val=shiftVal(shift,ds,sched);
+      html+=`<div class="mdc-shift-blk">
+        <div class="mdc-shift-hd">
+          <span class="mdc-shift-dot" style="background:${SC[shift]}"></span>
+          <span class="mdc-shift-name">${SL[shift]}</span>
+          <span class="mdc-shift-val">R$ ${fmt(val)}</span>
+        </div>`;
+      if(cov) html+=`<div class="mdc-shift-warn">⚠ Falta${cov.faltam>1?'m':''} ${cov.faltam} profissional${cov.faltam>1?'is':''}</div>`;
+      if(sa.length===0 && ro){
+        html+=`<div class="mdc-vacant">Vago</div>`;
       } else {
         sa.forEach(a=>{
           const doc=getDocInfo(a.doctorId,sched);
-          html+=`<div class="md-doc"><div class="md-dot" style="background:${SC[shift]}"></div>${doc.name}</div>`;
+          html+=`<div class="mdc-doc-row">
+            <div class="mdc-doc-av" style="background:${avColor(doc.id)}">${initials(doc.name)}</div>
+            <div class="mdc-doc-name">${doc.name}</div>
+            ${ro?'':`<button class="mdc-doc-rm" onclick="rmAlloc('${a.id}','${ds}')" aria-label="Remover">×</button>`}
+          </div>`;
         });
-        if(!ro) html+=`<button class="md-add" onclick="openAllocPanel('${ds}');setTimeout(()=>openAllocModal('${ds}','${shift}'),30)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>`;
+        if(!ro) html+=`<button class="mdc-add-btn" onclick="openMobAlloc('${ds}','${shift}')">${plusSvg}Escalar profissional</button>`;
       }
-      if(cov) html+=`<div class="md-shift-alert">⚠ ${cov.faltam===1?'Falta 1 profissional':'Faltam '+cov.faltam+' profissionals'}</div>`;
-      html+=`</div></div>`;
+      html+=`</div>`;
     });
-    html+='</div>';
+    html+=`</div></div>`;
   }
   c.innerHTML=html;
+}
+
+function toggleMdc(ds){
+  const el=document.getElementById('mdc-'+ds);
+  if(!el) return;
+  const wasExpanded=el.classList.contains('expanded');
+  // Collapse all others
+  document.querySelectorAll('.mdc.expanded').forEach(e=>{if(e!==el)e.classList.remove('expanded');});
+  el.classList.toggle('expanded',!wasExpanded);
+  if(!wasExpanded) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function openMobAlloc(ds,shift){
+  // On mobile: open the alloc panel directly (fullscreen)
+  openAllocPanel(ds);
+  setTimeout(()=>openAllocModal(ds,shift),80);
 }
 
 function openResumoModal(){
