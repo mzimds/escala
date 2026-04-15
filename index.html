@@ -377,7 +377,11 @@ input,select,textarea{font-family:var(--font);}
   z-index:1000;display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .2s;
 }
-/* early mobile modal override removed — handled in main @media block */
+@media(max-width:768px){
+  .overlay{align-items:flex-end;padding-bottom:env(safe-area-inset-bottom);}
+  .overlay.open .modal{transform:translateY(0);border-radius:var(--r-lg) var(--r-lg) 0 0;}
+  .modal{transform:translateY(20px) !important;width:100% !important;max-width:100% !important;min-width:0 !important;border-radius:var(--r-lg) var(--r-lg) 0 0 !important;}
+}
 .overlay.open{opacity:1;pointer-events:all;}
 .modal{
   background:var(--s1);border:1px solid var(--b2);border-radius:var(--r-lg);
@@ -495,7 +499,9 @@ input,select,textarea{font-family:var(--font);}
   }
   /* Action buttons: icon only */
   .tb-right{gap:4px;flex-shrink:0;}
-  /* tb-right hidden on non-escala: see mob-header-left section above */
+  /* Hide action buttons when not in escala view */
+  #topbar[data-mob-sec='resumo'] .tb-right,
+  #topbar[data-mob-sec='valores'] .tb-right{display:none;}
   .tb-right .btn span{display:none;}
   .tb-right .btn{
     width:34px;height:34px;
@@ -518,19 +524,12 @@ input,select,textarea{font-family:var(--font);}
   .sector-dropdown-hd{padding:12px 16px 8px;font-size:10px;}
   .sector-dropdown-add{padding:10px 12px;font-size:13px;}
 
-  /* ─── Toast — above fixed bottom nav ─── */
+  /* ─── Toast ─── */
   #toasts{
-    /* 52px nav + safe-area + 10px breathing room */
-    bottom:calc(52px + env(safe-area-inset-bottom) + 10px);
-    right:12px;left:12px;
+    bottom:80px;right:12px;left:12px;
     align-items:stretch;
-    z-index:9999;
   }
-  .toast{
-    font-size:13px;padding:11px 14px;
-    border-radius:10px;
-    box-shadow:0 4px 16px rgba(0,0,0,.5);
-  }
+  .toast{font-size:13px;padding:11px 14px;}
 
   /* ─── Mobile list (escala view) ─── */
   #view-mob{
@@ -622,31 +621,19 @@ input,select,textarea{font-family:var(--font);}
   }
   .bn-btn.active{color:var(--accent);}
   .bn-btn svg{width:22px;height:22px;}
-  /* ─── Mobile header: logo + section ─── */
-  .mob-header-left{
-    display:flex;flex-direction:column;justify-content:center;
-    gap:1px;flex-shrink:0;
+  /* Page title for non-escala sections */
+  .mob-page-title{
+    display:none;
+    font-size:16px;font-weight:600;color:var(--t1);
+    letter-spacing:-.3px;
   }
-  .mob-logo{
-    font-family:'Saira',var(--font);
-    font-size:18px;font-weight:400;
-    color:#FFFFFF;letter-spacing:.04em;line-height:1;
-  }
-  .mob-section-name{
-    font-size:10px;font-weight:500;
-    color:var(--t3);letter-spacing:.2px;
-    display:none; /* hidden on escala, shown on other sections */
-  }
-  /* On non-escala: show section sub-label, hide month nav, status, actions */
-  #topbar[data-mob-sec='resumo'] .mob-section-name,
-  #topbar[data-mob-sec='valores'] .mob-section-name{display:block;}
   #topbar[data-mob-sec='resumo'] .m-nav,
   #topbar[data-mob-sec='valores'] .m-nav{display:none;}
+  #topbar[data-mob-sec='resumo'] .mob-page-title,
+  #topbar[data-mob-sec='valores'] .mob-page-title{display:block;}
   #topbar[data-mob-sec='resumo'] #status-pill,
   #topbar[data-mob-sec='valores'] #status-pill{display:none;}
-  #topbar[data-mob-sec='resumo'] .tb-right,
-  #topbar[data-mob-sec='valores'] .tb-right{display:none;}
-  /* sector-switcher visible on all sections */
+  /* sector-switcher stays visible always for context */
   /* Active indicator dot */
   .bn-btn.active::after{
     content:'';
@@ -707,7 +694,7 @@ input,select,textarea{font-family:var(--font);}
   /* ─── Modals → native sheet (slide up from bottom) ─── */
   .overlay{
     align-items:flex-end;
-    background:rgba(0,0,0,.65);
+    background:rgba(0,0,0,.6);
     padding-bottom:0;
   }
   .overlay.open .modal{transform:translateY(0);}
@@ -716,14 +703,10 @@ input,select,textarea{font-family:var(--font);}
     width:100% !important;
     max-width:100% !important;
     min-width:0 !important;
-    border-radius:20px 20px 0 0 !important;
-    /* Sheet layout: flex column so actions can be sticky */
-    display:flex !important;
-    flex-direction:column !important;
-    padding:0 !important;
-    max-height:82dvh !important;
-    /* keyboard-aware: when virtual keyboard opens, dvh shrinks */
-    overflow:hidden !important;
+    border-radius:var(--r-lg) var(--r-lg) 0 0 !important;
+    padding:20px 18px calc(20px + env(safe-area-inset-bottom)) !important;
+    max-height:88dvh !important;
+    overflow-y:auto !important;
     transition:transform .25s cubic-bezier(.4,0,.2,1) !important;
   }
   /* Sheet drag handle */
@@ -733,37 +716,14 @@ input,select,textarea{font-family:var(--font);}
     width:36px;height:4px;
     background:var(--b2);
     border-radius:2px;
-    margin:12px auto 0;
-    flex-shrink:0;
+    margin:0 auto 16px;
   }
-  /* Scrollable content area inside modal */
-  /* Modal content: pad all children via wrapper pattern */
-  /* modal is flex-column; content scrolls; modal-act is sticky at bottom */
-  .modal-ttl,.modal-sub,.fg,.row2,.row3,.confirm-ico{
-    padding-left:18px !important;
-    padding-right:18px !important;
-    flex-shrink:0;
-  }
-  .modal-ttl{padding-top:16px !important;font-size:17px;margin-bottom:4px;}
+  .modal-ttl{font-size:17px;margin-bottom:4px;}
   .modal-sub{font-size:13px;margin-bottom:16px;}
-  /* All other direct children of modal that aren't modal-act */
-  .modal > div:not(.modal-act){
-    padding-left:18px;
-    padding-right:18px;
-    flex-shrink:0;
-  }
-  /* Override for specific already-handled ones */
-  .modal > .fg{padding-left:18px !important;padding-right:18px !important;}
-  /* Make modal scrollable for long content */
-  .modal{overflow-y:auto !important;overflow-x:hidden !important;}
-  /* Sticky action buttons — ALWAYS VISIBLE at bottom */
   .modal-act{
     flex-wrap:wrap;gap:8px;
-    flex-shrink:0;
-    padding:12px 18px calc(12px + env(safe-area-inset-bottom));
-    border-top:1px solid var(--b1);
-    background:var(--s1);
-    margin-top:0 !important;
+    margin-top:16px;
+    padding-bottom:env(safe-area-inset-bottom);
   }
   .modal-act .btn{
     flex:1;min-width:120px;
@@ -885,14 +845,14 @@ input,select,textarea{font-family:var(--font);}
   .mdc-vacant{font-size:13px;color:var(--t3);font-style:italic;padding:8px 0;}
 
   /* ─── ACCORDION for settings ─── */
-  .acc-item{background:var(--s1);border:1px solid var(--b1);border-radius:12px;margin-bottom:8px;overflow:visible;}
-  .acc-hd{display:flex;align-items:center;padding:16px;cursor:pointer;gap:10px;min-height:56px;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;text-align:left;font-family:var(--font);border-radius:12px 12px 0 0;}
+  .acc-item{background:var(--s1);border:1px solid var(--b1);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+  .acc-hd{display:flex;align-items:center;padding:16px;cursor:pointer;gap:10px;min-height:56px;-webkit-tap-highlight-color:transparent;border:none;background:none;width:100%;text-align:left;font-family:var(--font);}
   .acc-hd:active{background:var(--s2);}
   .acc-icon{font-size:17px;flex-shrink:0;}
   .acc-lbl{flex:1;font-size:15px;font-weight:600;color:var(--t1);}
   .acc-arrow{width:18px;height:18px;color:var(--t3);flex-shrink:0;transition:transform .2s;}
   .acc-item.open .acc-arrow{transform:rotate(180deg);}
-  .acc-body{display:none;padding:0 16px 16px;border-top:1px solid var(--b1);border-radius:0 0 12px 12px;}
+  .acc-body{display:none;padding:0 16px 16px;border-top:1px solid var(--b1);}
   .acc-item.open .acc-body{display:block;}
   .acc-body .sc-section-ttl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 10px;}
   .cov-cards{display:flex;flex-direction:column;gap:8px;}
@@ -925,7 +885,7 @@ input,select,textarea{font-family:var(--font);}
     display:none;
     flex-direction:column;
     flex:1;overflow-y:auto;
-    padding:0 0 calc(52px + env(safe-area-inset-bottom) + 16px);
+    padding:0 0 calc(72px + env(safe-area-inset-bottom));
     -webkit-overflow-scrolling:touch;
   }
   #mob-fin.show{display:flex;}
@@ -1365,10 +1325,7 @@ input,select,textarea{font-family:var(--font);}
 <div id="main">
   <!-- TOPBAR -->
   <div id="topbar" data-mob-sec="escala">
-    <div class="mob-header-left">
-      <span class="mob-logo">Escala</span>
-      <span class="mob-section-name" id="mob-page-title"></span>
-    </div>
+    <span class="mob-page-title" id="mob-page-title">Financeiro</span>
     <div class="m-nav">
       <button class="m-btn" onclick="prevMonth()">&#8249;</button>
       <div id="month-lbl"></div>
@@ -2984,14 +2941,7 @@ function renderMobCfg(){
 function toggleAcc(id){
   const el=document.getElementById('acc-'+id);
   if(!el) return;
-  const wasOpen=el.classList.contains('open');
   el.classList.toggle('open');
-  // Scroll accordion body into view after opening
-  if(!wasOpen){
-    setTimeout(()=>{
-      el.scrollIntoView({behavior:'smooth',block:'nearest'});
-    },120); // wait for CSS transition
-  }
 }
 
 function saveMobHospitalCfg(){
@@ -3020,9 +2970,9 @@ function mobNav(sec){
   // Update topbar context class for mobile
   if(isMob){
     document.getElementById('topbar')?.setAttribute('data-mob-sec',sec);
-    const sectionNames={escala:'',resumo:'Financeiro',valores:'Configurações'};
+    const titles={escala:'Escala',resumo:'Financeiro',valores:'Configurações'};
     const titleEl=document.getElementById('mob-page-title');
-    if(titleEl) titleEl.textContent=sectionNames[sec]||'';
+    if(titleEl) titleEl.textContent=titles[sec]||sec;
   }
   if(isMob){
     // Mobile: route between three native screens
