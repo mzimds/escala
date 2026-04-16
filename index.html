@@ -458,11 +458,11 @@ input,select,textarea{font-family:var(--font);}
 
   /* ─── Topbar ─── */
   #topbar{
-    height:56px;
-    padding:0 14px;
-    gap:8px;
+    height:auto;
+    min-height:52px;
+    padding:0 10px;
+    gap:6px;
     flex-wrap:nowrap;
-    /* CRITICAL FIX: overflow visible so sector dropdown can escape */
     overflow:visible;
     flex-shrink:0;
     position:relative;
@@ -2830,7 +2830,11 @@ function confirmDup(){
   if(srcK===dstK){toast('Origem e destino iguais.','err');return;}
   const src=S.schedules[srcK];
   if(!src||(src.allocations||[]).length===0){toast('Mês de origem vazio.','err');return;}
-  const[dy,dm]=dstK.split('-').map(Number);
+  // BUGFIX: dstK format is "YYYY-MM|sectorId" — extract date part before splitting
+  const dstDate=dstK.split('|')[0];
+  const dy=parseInt(dstDate.split('-')[0]);
+  const dm=parseInt(dstDate.split('-')[1]);
+  if(isNaN(dy)||isNaN(dm)){toast('Destino inválido.','err');return;}
   const dst=getSched(dy,dm);
   if(dst.status==='finalized'){toast('Destino já finalizado!','err');return;}
   const lastDay=new Date(dy,dm,0).getDate();
@@ -2920,10 +2924,6 @@ function renderMobFin(){
       <div class="fin-hero-total">R$ ${fmt(total)}</div>
       <div class="fin-hero-month">${MONTHS[S.currentMonth-1]} ${S.currentYear}</div>
       <div style="display:flex;justify-content:center;gap:12px;margin-top:16px;flex-wrap:wrap">
-        ${docCount>0?`<div class="fin-per-prof">
-          <span class="fin-per-prof-lbl">Média / prof.</span>
-          <span class="fin-per-prof-val">R$ ${fmt(perProf)}</span>
-        </div>`:''}
         <div class="fin-per-prof">
           <span class="fin-per-prof-lbl">Profissionais</span>
           <span class="fin-per-prof-val">${docCount}</span>
