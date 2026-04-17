@@ -489,12 +489,11 @@ input,select,textarea{font-family:var(--font);}
   .sector-switcher-btn .sec-name{
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
-  /* Status pill: no shrink */
+  /* Status pill: hidden on mobile — clean topbar */
   #status-pill{
-    font-size:10px;padding:3px 8px;
-    flex-shrink:0;white-space:nowrap;
+    display:none !important;
   }
-  /* Action buttons: icon only */
+  /* Action buttons: icon only, hidden on non-escala sections */
   .tb-right{gap:4px;flex-shrink:0;}
   .tb-right .btn span{display:none;}
   .tb-right .btn{
