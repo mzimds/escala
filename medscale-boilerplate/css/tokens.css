@@ -1,0 +1,70 @@
+/* ============================================================
+   tokens.css — Design tokens + reset global
+   ============================================================ */
+
+/* ── Tokens ────────────────────────────────────────────── */
+:root {
+  /* Cores */
+  --bg:         #0b0d13;
+  --s1:         #12151e;
+  --s2:         #181c28;
+  --s3:         #1d2133;
+  --b1:         #232840;
+  --b2:         #2c3150;
+  --t1:         #e2e5f0;
+  --t2:         #7a8399;
+  --t3:         #424a62;
+  --accent:     #4f8ef7;
+  --accent2:    #3570d4;
+  --accent-dim: rgba(79,142,247,.12);
+  --green:      #2dd4a0;
+  --green-dim:  rgba(45,212,160,.1);
+  --red:        #f06a6a;
+  --red-dim:    rgba(240,106,106,.1);
+  --yellow:     #f4c542;
+
+  /* Tipografia */
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+
+  /* Radii */
+  --r:    10px;
+  --r-sm: 6px;
+  --r-lg: 14px;
+
+  /* Sombra */
+  --shadow: 0 8px 32px rgba(0,0,0,.55);
+
+  /* Alturas fixas */
+  --topbar-h:  52px;
+  --botnav-h:  56px;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--t1);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+button { font-family: var(--font); cursor: pointer; }
+input, select, textarea { font-family: var(--font); }
+a { color: inherit; text-decoration: none; }
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
+
+/* ── Animações ─────────────────────────────────────────── */
+@keyframes toastIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

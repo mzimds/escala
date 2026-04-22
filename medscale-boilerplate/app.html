@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MedScale — App</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/layout.css">
+</head>
+<body>
+
+  <!-- ── Toast container ── -->
+  <div id="toasts"></div>
+
+  <!-- ════════════════════════════════════
+       SHELL DO APP
+       ════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- ── Sidebar (desktop) ── -->
+    <aside id="sidebar">
+      <div class="sidebar-logo">MedScale</div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-home" onclick="mobNav('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+          </svg>
+          Escala
+        </button>
+        <button class="nav-item" id="nav-financeiro" onclick="mobNav('financeiro')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          Financeiro
+        </button>
+        <button class="nav-item" id="nav-config" onclick="mobNav('config')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.1 4.9C15.2 1 8.8 1 4.9 4.9S1 15.2 4.9 19.1s10.2 3.9 14.2 0 3.9-10.2 0-14.2z"/>
+          </svg>
+          Configurações
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-row">
+          <div class="user-avatar" id="user-avatar">?</div>
+          <div class="user-email"  id="user-email">—</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sair da conta
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div id="main">
+
+      <!-- Topbar -->
+      <header id="topbar">
+        <span class="topbar-title" id="topbar-title">Escala</span>
+
+        <!-- Logout acessível no mobile (fica no topbar) -->
+        <button class="btn btn-ghost topbar-logout-mobile" onclick="handleLogout()" title="Sair" style="padding:6px 10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Conteúdo das seções -->
+      <main id="content">
+
+        <!-- ─── Seção: Escala ─── -->
+        <section id="section-home" class="section active">
+          <h2 style="font-size:18px;font-weight:600;margin-bottom:16px">Escala</h2>
+          <div class="card">
+            <div class="card-title">Bem-vindo ao MedScale</div>
+            <div class="card-sub">Seu painel de controle de escalas médicas.</div>
+            <p style="color:var(--t2);font-size:13px;line-height:1.7">
+              Esta é a seção principal do sistema. Adicione aqui os componentes
+              de calendário, lista de dias e alocações de profissionais.
+            </p>
+          </div>
+        </section>
+
+        <!-- ─── Seção: Financeiro ─── -->
+        <section id="section-financeiro" class="section">
+          <h2 style="font-size:18px;font-weight:600;margin-bottom:16px">Financeiro</h2>
+          <div class="card">
+            <div class="card-title">Resumo financeiro</div>
+            <div class="card-sub">Valores e pagamentos do mês atual.</div>
+            <div class="empty-state">
+              <div class="empty-state-icon">💰</div>
+              <div class="empty-state-text">Nenhum dado financeiro disponível.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── Seção: Configurações ─── -->
+        <section id="section-config" class="section">
+          <h2 style="font-size:18px;font-weight:600;margin-bottom:16px">Configurações</h2>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-title">Conta</div>
+            <div class="card-sub">Dados da sua conta logada.</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0">
+              <div class="user-avatar" id="config-avatar" style="width:40px;height:40px;font-size:15px">?</div>
+              <div>
+                <div style="font-size:14px;font-weight:500" id="config-email">—</div>
+                <div style="font-size:11px;color:var(--t3)">Conta ativa</div>
+              </div>
+            </div>
+            <button class="btn btn-danger" onclick="handleLogout()" style="margin-top:8px">
+              Sair da conta
+            </button>
+          </div>
+        </section>
+
+      </main>
+    </div><!-- /#main -->
+
+  </div><!-- /#app -->
+
+  <!-- ── Bottom Nav (mobile) ── -->
+  <nav id="bot-nav">
+    <div class="bn">
+      <button class="bn-btn active" id="bn-home" onclick="mobNav('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8"  y1="2" x2="8"  y2="6"/>
+          <line x1="3"  y1="10" x2="21" y2="10"/>
+        </svg>
+        Escala
+      </button>
+      <button class="bn-btn" id="bn-financeiro" onclick="mobNav('financeiro')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Financeiro
+      </button>
+      <button class="bn-btn" id="bn-config" onclick="mobNav('config')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.1 4.9C15.2 1 8.8 1 4.9 4.9S1 15.2 4.9 19.1s10.2 3.9 14.2 0 3.9-10.2 0-14.2z"/>
+        </svg>
+        Config
+      </button>
+    </div>
+  </nav>
+
+  <!-- Supabase SDK (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- JS do app -->
+  <script type="module" src="/js/app.js"></script>
+
+</body>
+</html>
