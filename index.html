@@ -524,6 +524,11 @@ input,select,textarea{font-family:var(--font);}
     flex-shrink:0;
   }
   .tb-right .btn svg{width:15px;height:15px;}
+  /* Esconder tb-right quando não está na aba escala no mobile */
+  #topbar[data-mob-sec="valores"] .tb-right,
+  #topbar[data-mob-sec="resumo"] .tb-right {
+    display:none !important;
+  }
 
   /* ─── CRITICAL FIX 1: Sector dropdown — escapa do topbar via position:fixed ─── */
   /* O dropdown estava sendo cortado pelo overflow:hidden do topbar.
@@ -1466,21 +1471,7 @@ input,select,textarea{font-family:var(--font);}
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.logo-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--accent-dim);
-  color: var(--accent);
-  margin-left: 8px;
-  vertical-align: middle;
-  -webkit-text-fill-color: var(--accent);
-}
+
 
 /* Hospital name in sidebar */
 .sb-hospital {
@@ -1574,7 +1565,7 @@ input,select,textarea{font-family:var(--font);}
   gap: 14px;
   transition: opacity .3s;
 }
-#app-loading.hidden { opacity: 0; pointer-events: none; }
+#app-loading.hidden { opacity: 0; pointer-events: none; display: none !important; }
 .loading-logo {
   font-size: 22px;
   font-weight: 600;
@@ -1707,10 +1698,7 @@ input,select,textarea{font-family:var(--font);}
 <!-- ═══════════ SIDEBAR ═══════════ -->
 <div id="sidebar">
   <div class="sb-logo">
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="logo">Escala</div>
-      <span class="logo-badge">SaaS</span>
-    </div>
+    <div class="logo">Escala</div>
   </div>
   <div class="sb-hospital-edit">
     <span class="sb-hospital-name" id="sb-hospital-name" onclick="openHospitalModal()" title="Clique para editar">Meu Hospital</span>
@@ -2241,8 +2229,9 @@ window.AUTH = {
     try {
       const {data,error} = await _supa.auth.signUp({email: email.trim().toLowerCase(), password});
       if(error) return {ok:false, err: _authErr(error.message)};
+      // Se não há sessão = confirmação de e-mail está ativada no Supabase
       if(data.user && !data.session){
-        return {ok:false, err:'Verifique seu e-mail para confirmar o cadastro.'};
+        return {ok:false, err:'📧 Confirmação enviada! Verifique seu e-mail e clique no link para ativar sua conta.', warn:true};
       }
       return {ok:true};
     } finally {
@@ -2608,7 +2597,15 @@ async function authSignup(){
   if(pass.length<6){authShowError('su-err','Senha deve ter no mínimo 6 caracteres.');return;}
   if(pass!==pass2){authShowError('su-err','As senhas não coincidem.');return;}
   const r=await AUTH.signup(email,pass);
-  if(!r.ok){authShowError('su-err',r.err);return;}
+  if(!r.ok){
+    const el=document.getElementById('su-err');
+    el.textContent=r.err;
+    el.style.background=r.warn?'rgba(91,141,239,.1)':'';
+    el.style.borderColor=r.warn?'rgba(91,141,239,.3)':'';
+    el.style.color=r.warn?'var(--accent)':'';
+    el.classList.add('show');
+    return;
+  }
   // onAuthStateChange vai chamar authEnterApp
 }
 
@@ -2680,29 +2677,39 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(su) su.addEventListener('keydown',e=>{if(e.key==='Enter')authSignup();});
 });
 
-// ─── Listener de sessão Supabase ───
-_supa.auth.onAuthStateChange(async (event, session)=>{
-  if(event==='SIGNED_IN' && session?.user){
-    if(!_hospitalId){ // evita double-run
-      await authEnterApp(session.user);
-    }
-  } else if(event==='SIGNED_OUT'){
-    location.reload();
-  }
-});
+// ─── Verificar sessão existente ao carregar (single entry point) ───
+let _appBooted = false;
 
-// ─── Verificar sessão existente ao carregar ───
 (async()=>{
-  const {data:{session}} = await _supa.auth.getSession();
-  if(session?.user){
-    // Já logado — iniciar app direto
-    await authEnterApp(session.user);
-  } else {
-    // Mostrar tela de login
+  try {
+    // Tratar token de confirmação na URL (callback do e-mail de confirmação)
+    // Supabase SDK detecta automaticamente o hash #access_token=... na URL
+    const {data:{session}} = await _supa.auth.getSession();
+    if(session?.user && !_appBooted){
+      _appBooted = true;
+      // Limpar hash da URL sem recarregar a página
+      if(window.location.hash) history.replaceState(null,'',window.location.pathname);
+      await authEnterApp(session.user);
+    } else {
+      document.getElementById('app-loading')?.classList.add('hidden');
+    }
+  } catch(e) {
+    console.error('getSession error:', e);
     document.getElementById('app-loading')?.classList.add('hidden');
-    // auth-screen já está visível por padrão
   }
 })();
+
+// ─── Listener de sessão Supabase (login/logout após boot) ───
+_supa.auth.onAuthStateChange(async (event, session)=>{
+  if(event==='SIGNED_IN' && session?.user && !_appBooted){
+    _appBooted = true;
+    await authEnterApp(session.user);
+  } else if(event==='SIGNED_OUT'){
+    _appBooted = false;
+    location.reload();
+  }
+  // INITIAL_SESSION event ignorado — tratado pelo getSession acima
+});
 
 </script>
 <script>
@@ -2819,16 +2826,13 @@ function loadS(){
         }
       });
     } else {
-      // Novo usuário: criar setor padrão
-      const defaultSector={id:'sector_default',name:'Geral'};
-      S.sectors=[defaultSector];
-      S.currentSectorId='sector_default';
-      S.doctors=[
-        {id:uid(),name:'Dr. João Mendes',specialty:'Clínica Geral',active:true},
-        {id:uid(),name:'Dra. Ana Lima',specialty:'Pediatria',active:true},
-        {id:uid(),name:'Dr. Carlos Rocha',specialty:'Urgência',active:true},
-      ];
-      saveS();
+      // Novo usuário: estado mínimo — dados virão do Supabase via bootstrapApp()
+      // Não criar dados demo pois o bootstrap já popula S corretamente
+      if(!S.sectors.length){
+        const defaultSector={id:'sector_default',name:'Geral'};
+        S.sectors=[defaultSector];
+        S.currentSectorId='sector_default';
+      }
     }
   }catch(e){console.warn(e);}
 }
@@ -3057,25 +3061,34 @@ function openSectorModal(id){
   openModal('m-sector');
 }
 
-function saveSector(){
+async function saveSector(){
   const name=document.getElementById('fi-sector-name').value.trim();
   if(!name){toast('Informe o nome do setor.','err');return;}
+
+  // Fechar modal imediatamente
+  closeModal('m-sector');
+
   if(editSectorId){
     const sec=S.sectors.find(s=>s.id===editSectorId);
-    if(sec) sec.name=name;
+    if(sec){
+      sec.name=name;
+      if(_hospitalId) saveSectorDb(sec).catch(e=>console.warn('saveSectorDb:',e));
+    }
     toast('Setor atualizado!','ok');
   } else {
-    const newSec={id:'sec_'+uid(),name};
+    const newSec={id:'sec_'+uid(),name,_isNew:true};
     S.sectors.push(newSec);
-    // Se é o primeiro setor, ativar automaticamente
     if(S.sectors.length===1) S.currentSectorId=newSec.id;
+    if(_hospitalId){
+      try { await saveSectorDb(newSec); } catch(e){ console.warn('saveSectorDb:',e); }
+    }
     toast('Setor adicionado!','ok');
   }
   saveS();
   renderSectorList();
   renderTopbar();
   renderSectorContextLabels();
-  closeModal('m-sector');
+  if(window.innerWidth<769) renderMobCfg();
 }
 
 function deleteSector(){
@@ -3361,17 +3374,25 @@ function confirmAlloc(){
   if((sched.allocations||[]).find(a=>a.doctorId===docId&&a.date===allocCtx.date&&a.shift===allocCtx.shift)){
     toast('Profissional já escalado neste turno!','err'); return;
   }
-  sched.allocations.push({
+  const newAlloc={
     id:uid(),doctorId:docId,
     date:allocCtx.date,shift:allocCtx.shift,
     value:shiftVal(allocCtx.shift,allocCtx.date,sched),
-  });
-  saveS(); refetch(); renderRightPanel(); renderSidebar();
-  updateCalendarAlerts();
-  renderApBody(allocCtx.date);
-  if(window.innerWidth<769){ renderMobDays(); closeAllocPanel(); }
+  };
+  sched.allocations.push(newAlloc);
+
+  // Fechar modal primeiro — resposta imediata
   closeModal('m-alloc');
   toast('Profissional escalado!','ok');
+
+  // Atualizar UI completamente
+  saveS();
+  refetch();
+  renderRightPanel();
+  renderSidebar();
+  updateCalendarAlerts();
+  renderApBody(allocCtx.date);
+  if(window.innerWidth<769) renderMobDays();
 }
 
 function rmAlloc(id,ds){
@@ -3399,20 +3420,37 @@ function openDocModal(id){
   openModal('m-doc');
 }
 
-function saveDoc(){
+async function saveDoc(){
   const name=document.getElementById('fi-name').value.trim();
   const spec=document.getElementById('fi-spec').value.trim();
   if(!name){toast('Informe o nome.','err');return;}
+
+  // Fechar modal imediatamente — UX responsivo
+  closeModal('m-doc');
+
   if(editDocId){
     const doc=S.doctors.find(d=>d.id===editDocId);
-    doc.name=name; doc.specialty=spec;
-    doc.active=document.getElementById('fs-status').value==='true';
+    if(doc){
+      doc.name=name; doc.specialty=spec;
+      doc.active=document.getElementById('fs-status').value==='true';
+    }
     toast('Profissional atualizado!','ok');
+    // Sync banco em background
+    if(_hospitalId && doc) saveDoctor(doc).catch(e=>console.warn('saveDoctor:',e));
   } else {
-    S.doctors.push({id:uid(),name,specialty:spec,active:true});
+    const newDoc={id:uid(),name,specialty:spec,active:true};
+    S.doctors.push(newDoc);
     toast('Profissional adicionado!','ok');
+    // Sync banco: aguardar para obter ID real do banco
+    if(_hospitalId){
+      try {
+        await saveDoctor(newDoc);
+      } catch(e){ console.warn('saveDoctor:', e); }
+    }
   }
-  saveS(); renderAll(); closeModal('m-doc');
+  // Renderizar DEPOIS da operação de banco para mostrar dados corretos
+  renderAll();
+  saveS();
 }
 
 function deleteDoc(){
@@ -4244,6 +4282,8 @@ function openResumoModal(){
 function renderAll(){
   renderTopbar(); renderSidebar(); renderRightPanel(); renderMobDays();
   if(deskView==='cfg') renderHospitalCfg();
+  // Mobile: atualizar tela de cfg se estiver nela
+  if(window.innerWidth<769 && mobSection==='valores') renderMobCfg();
 }
 
 // ═══════════════════════════════════════════
@@ -4350,85 +4390,9 @@ function fmt(n){ return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:
 function initials(n){ return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
 function avColor(id){ let h=0; for(let i=0;i<id.length;i++) h=(Math.imul(31,h)+id.charCodeAt(i))|0; return AVC[Math.abs(h)%AVC.length]; }
 
-// ═══════════════════════════════════════════
-//  BOOTSTRAP — check auth before init
-// ═══════════════════════════════════════════
-(function bootstrap(){
-  // Populate seed hint via JS (avoids email-scraper obfuscation)
-  const seedEl=document.getElementById('seed-email');
-  if(seedEl) seedEl.textContent=['teste','escala.com'].join('@');
-  // Route: logged in → app directly; not logged in → show auth screen
-  if(AUTH.currentUserId()){
-    document.getElementById('auth-screen').style.display='none';
-    authUpdateSidebarUser();
-    init();
-  } else {
-    setTimeout(()=>{ const el=document.getElementById('li-email'); if(el) el.focus(); },100);
-  }
-})();
+// Bootstrap removido — authEnterApp() cuida do init() via Supabase session
+// Focus no campo de e-mail quando na tela de login
+setTimeout(()=>{ const el=document.getElementById('li-email'); if(el) el.focus(); },200);
 </script>
-</body>
-</html>
-</script>
-<script>
-
-// ═══════════════════════════════════════════
-//  OVERRIDES: médicos e setores → Supabase
-// ═══════════════════════════════════════════
-
-// Salva médico no banco após o saveDoc original
-const _origSaveDoc = typeof saveDoc === 'function' ? saveDoc : null;
-
-// Setor: salvar no banco quando criado/editado
-// (o saveS() já faz sync geral, mas setores/médicos precisam de IDs reais do banco)
-
-// Setor atual: persistir no localStorage para reload
-function switchSector(id){
-  if(id===S.currentSectorId){ closeSectorDropdown(); return; }
-  if(!S.sectors.find(s=>s.id===id)) return;
-  const flash=document.getElementById('sector-switch-flash');
-  if(flash){flash.classList.add('flash');setTimeout(()=>flash.classList.remove('flash'),280);}
-  S.currentSectorId=id;
-  localStorage.setItem('esc_current_sector_'+(_userId||''), id);
-  closeSectorDropdown();
-  renderAll();
-  renderSectorContextLabels();
-  if(window.innerWidth<769) mobNav('escala');
-}
-
-// Hospital name modal
-function openHospitalModal(){
-  document.getElementById('fi-hospital-name').value = S._hospitalName||'';
-  openModal('m-hospital');
-}
-
-async function saveHospitalModal(){
-  const name=(document.getElementById('fi-hospital-name').value||'').trim();
-  if(!name){toast('Nome não pode ficar vazio','err');return;}
-  await saveHospitalName(name);
-  renderHospitalName();
-  closeModal('m-hospital');
-  toast('Nome atualizado!','ok');
-}
-
-// Membros: buscar emails dos membros (RPC simples — requer view ou função no Supabase)
-async function loadMemberEmails(){
-  // Busca o email de cada membro via auth.users (requer função SQL pública)
-  // Se não tiver a função, apenas exibe o user_id
-  try {
-    const ids = _members.map(m=>m.user_id);
-    const {data} = await _supa.rpc('get_member_emails', {user_ids: ids});
-    if(data){
-      _members = _members.map(m=>({
-        ...m,
-        email: data.find(d=>d.id===m.user_id)?.email || m.email || ''
-      }));
-      renderMembers();
-    }
-  } catch(e){ /* silently fail — fallback para user_id */ }
-}
-
-</script>
-
 </body>
 </html>
