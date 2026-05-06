@@ -460,7 +460,8 @@ input,select,textarea{font-family:var(--font);}
 
 #bot-nav{display:none;background:var(--s1);border-top:1px solid var(--b1);padding:0 4px;padding-bottom:env(safe-area-inset-bottom);}
 .bn{display:flex;}
-.bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 7px;color:var(--t3);font-size:10px;font-weight:500;border:none;background:none;transition:color .15s;cursor:pointer;}
+.bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;color:var(--t3);font-size:10px;font-weight:600;border:none;background:none;transition:color .15s,background .15s;cursor:pointer;border-radius:8px;margin:2px;}
+.bn-btn:active{background:var(--s2);}
 .bn-btn:hover{color:var(--t2);}
 .bn-btn.active{color:var(--accent);}
 .bn-btn svg{width:20px;height:20px;}
@@ -478,56 +479,85 @@ input,select,textarea{font-family:var(--font);}
   #bot-nav{display:block;}
   #alloc-panel{width:100%;max-width:100%;}
 
-  /* ─── Topbar ─── */
+  /* ─── Topbar mobile: 2 linhas para evitar sobreposição ─── */
   #topbar{
     height:auto;
-    min-height:52px;
-    padding:0 10px;
-    gap:6px;
-    flex-wrap:nowrap;
+    padding:8px 10px;
+    gap:0;
+    flex-wrap:wrap;
     overflow:visible;
     flex-shrink:0;
     position:relative;
     z-index:100;
+    align-items:center;
   }
-  /* Month nav: fixed size, no shrink */
-  .m-nav{gap:4px;flex-shrink:0;}
+
+  /* Linha 1: navegação de mês ocupa toda a largura */
+  .m-nav{
+    gap:4px;
+    flex-shrink:0;
+    order:0;
+  }
   .m-btn{
     width:34px;height:34px;
-    border-radius:var(--r-sm);flex-shrink:0;
+    border-radius:var(--r-sm);
+    flex-shrink:0;
   }
   #month-lbl{
     font-size:14px;font-weight:600;
-    min-width:96px;letter-spacing:-.3px;
+    min-width:0;
+    flex:1;
+    text-align:center;
+    letter-spacing:-.3px;
     white-space:nowrap;
   }
-  /* Sector button: flexible center */
-  .sector-switcher{flex:1;min-width:0;}
+
+  /* Espaçador entre linha1 e linha2 */
+  .sector-switcher{
+    order:2;
+    flex:1;
+    min-width:0;
+    margin-top:6px;
+  }
   .sector-switcher-btn{
     width:100%;max-width:none;min-width:0;
-    padding:6px 10px;font-size:12.5px;
-    height:34px;
+    padding:5px 10px;font-size:12px;
+    height:32px;
   }
   .sector-switcher-btn .sec-name{
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
-  /* Status pill: hidden on mobile — clean topbar */
-  #status-pill{
-    display:none !important;
+
+  /* Status pill: hidden on mobile */
+  #status-pill{ display:none !important; }
+
+  /* tb-right: na linha 2, ao lado do sector switcher */
+  .tb-right{
+    order:3;
+    gap:4px;
+    flex-shrink:0;
+    margin-top:6px;
+    margin-left:6px;
   }
-  /* Action buttons: icon only, hidden on non-escala sections */
-  .tb-right{gap:4px;flex-shrink:0;}
   .tb-right .btn span{display:none;}
   .tb-right .btn{
-    width:34px;height:34px;
+    width:32px;height:32px;
     padding:0;justify-content:center;
     flex-shrink:0;
   }
   .tb-right .btn svg{width:15px;height:15px;}
-  /* Esconder tb-right quando não está na aba escala no mobile */
+
+  /* Esconder tb-right e sector-switcher quando não está na aba escala */
   #topbar[data-mob-sec="valores"] .tb-right,
-  #topbar[data-mob-sec="resumo"] .tb-right {
+  #topbar[data-mob-sec="resumo"] .tb-right,
+  #topbar[data-mob-sec="valores"] .sector-switcher,
+  #topbar[data-mob-sec="resumo"] .sector-switcher{
     display:none !important;
+  }
+  /* Quando sem sector/tb-right, month-lbl ocupa linha inteira centralizada */
+  #topbar[data-mob-sec="valores"] #month-lbl,
+  #topbar[data-mob-sec="resumo"] #month-lbl{
+    text-align:left;
   }
 
   /* ─── CRITICAL FIX 1: Sector dropdown — escapa do topbar via position:fixed ─── */
@@ -595,8 +625,9 @@ input,select,textarea{font-family:var(--font);}
   #view-mob.show{display:flex;}
   #mob-days{
     flex:1;overflow-y:auto;
-    padding:10px 12px calc(72px + env(safe-area-inset-bottom));
+    padding:10px 12px calc(80px + env(safe-area-inset-bottom));
     -webkit-overflow-scrolling:touch;
+    background:var(--bg);
   }
 
   /* Day card */
@@ -1683,7 +1714,10 @@ input,select,textarea{font-family:var(--font);}
         <input class="auth-input" id="su-pass2" type="password" placeholder="Repita a senha" autocomplete="new-password">
       </div>
       <div class="auth-error" id="su-err"></div>
-      <button class="auth-btn" onclick="authSignup()">Criar conta</button>
+      <button class="auth-btn" id="btn-signup" onclick="authSignup()">Criar conta</button>
+      <p style="font-size:11px;color:var(--t3);text-align:center;margin-top:8px;line-height:1.5">
+        Após criar a conta, confirme seu e-mail para acessar o sistema.
+      </p>
     </div>
 
     <div class="auth-seed" id="auth-seed-hint">
@@ -2240,8 +2274,9 @@ window.AUTH = {
   },
 
   async logout(){
+    _intentionalLogout = true;
     await _supa.auth.signOut();
-    location.reload();
+    // onAuthStateChange com SIGNED_OUT + _intentionalLogout=true vai recarregar
   }
 };
 
@@ -2677,38 +2712,42 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(su) su.addEventListener('keydown',e=>{if(e.key==='Enter')authSignup();});
 });
 
-// ─── Verificar sessão existente ao carregar (single entry point) ───
+// ─── Boot único — sessão Supabase via onAuthStateChange ───
+// IMPORTANTE: usamos APENAS onAuthStateChange como fonte de verdade.
+// Isso evita o bug de logout no refresh onde getSession() retorna null
+// antes do SDK restaurar a sessão do localStorage/cookie.
 let _appBooted = false;
+let _intentionalLogout = false;
 
-(async()=>{
-  try {
-    // Tratar token de confirmação na URL (callback do e-mail de confirmação)
-    // Supabase SDK detecta automaticamente o hash #access_token=... na URL
-    const {data:{session}} = await _supa.auth.getSession();
-    if(session?.user && !_appBooted){
+_supa.auth.onAuthStateChange(async (event, session) => {
+  // INITIAL_SESSION: dispara sempre no carregamento com a sessão atual (ou null)
+  if (event === 'INITIAL_SESSION') {
+    if (session?.user && !_appBooted) {
       _appBooted = true;
-      // Limpar hash da URL sem recarregar a página
-      if(window.location.hash) history.replaceState(null,'',window.location.pathname);
+      if (window.location.hash) history.replaceState(null, '', window.location.pathname);
       await authEnterApp(session.user);
-    } else {
+    } else if (!session) {
+      // Sem sessão — mostrar tela de login
       document.getElementById('app-loading')?.classList.add('hidden');
     }
-  } catch(e) {
-    console.error('getSession error:', e);
-    document.getElementById('app-loading')?.classList.add('hidden');
+    return;
   }
-})();
 
-// ─── Listener de sessão Supabase (login/logout após boot) ───
-_supa.auth.onAuthStateChange(async (event, session)=>{
-  if(event==='SIGNED_IN' && session?.user && !_appBooted){
+  if (event === 'SIGNED_IN' && session?.user && !_appBooted) {
     _appBooted = true;
+    if (window.location.hash) history.replaceState(null, '', window.location.pathname);
     await authEnterApp(session.user);
-  } else if(event==='SIGNED_OUT'){
-    _appBooted = false;
-    location.reload();
+    return;
   }
-  // INITIAL_SESSION event ignorado — tratado pelo getSession acima
+
+  if (event === 'SIGNED_OUT') {
+    // Só redirecionar se foi logout intencional (botão "Sair")
+    // Nunca reagir a SIGNED_OUT disparado pelo SDK durante refresh
+    if (_intentionalLogout) {
+      _appBooted = false;
+      location.reload();
+    }
+  }
 });
 
 </script>
@@ -3381,27 +3420,40 @@ function confirmAlloc(){
   };
   sched.allocations.push(newAlloc);
 
-  // Fechar modal primeiro — resposta imediata
+  // 1. Fechar modal imediatamente
   closeModal('m-alloc');
-  toast('Profissional escalado!','ok');
 
-  // Atualizar UI completamente
-  saveS();
-  refetch();
+  // 2. Atualizar painel lateral em tempo real (síncrono, instantâneo)
+  renderApBody(allocCtx.date);
+
+  // 3. Atualizar financeiro e sidebar
   renderRightPanel();
   renderSidebar();
+
+  // 4. Atualizar calendário (refetch é assíncrono mas rápido)
+  refetch();
   updateCalendarAlerts();
-  renderApBody(allocCtx.date);
+
+  // 5. Mobile
   if(window.innerWidth<769) renderMobDays();
+
+  // 6. Salvar no banco (em background, não bloqueia UI)
+  saveS();
+
+  toast('Profissional escalado!','ok');
 }
 
 function rmAlloc(id,ds){
   const sched=getSched();
   sched.allocations=sched.allocations.filter(a=>a.id!==id);
-  saveS(); refetch(); renderRightPanel(); renderSidebar();
-  updateCalendarAlerts();
+  // Instantâneo: painel primeiro
   renderApBody(ds);
+  renderRightPanel();
+  renderSidebar();
+  refetch();
+  updateCalendarAlerts();
   if(window.innerWidth<769) renderMobDays();
+  saveS();
   toast('Removido.','info');
 }
 
