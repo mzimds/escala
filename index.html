@@ -482,65 +482,65 @@ input,select,textarea{font-family:var(--font);}
   #bot-nav{display:block;}
   #alloc-panel{width:100%;max-width:100%;}
 
-  /* ─── Topbar mobile: linha única limpa ─── */
+  /* ─── Topbar mobile: [← Mês →] [••• Setor ▾] [☰] ─── */
   #topbar{
-    height:54px;
-    padding:0 10px;
+    height:56px;
+    padding:0 12px;
     gap:8px;
     flex-wrap:nowrap;
     overflow:visible;
     flex-shrink:0;
-    position:relative;
-    z-index:100;
     align-items:center;
+    display:flex;
   }
 
-  /* Navegação de mês compacta */
-  .m-nav{ gap:2px; flex-shrink:0; }
+  /* Navegação de mês — esquerda, não cresce */
+  .m-nav{
+    display:flex;align-items:center;
+    gap:2px;
+    flex:0 0 auto;
+  }
   .m-btn{
-    width:32px;height:32px;
+    width:30px;height:30px;
     border-radius:var(--r-sm);
     flex-shrink:0;
   }
   #month-lbl{
     font-size:13px;font-weight:700;
-    min-width:0;
-    width:auto;
-    text-align:center;
-    letter-spacing:-.2px;
     white-space:nowrap;
+    letter-spacing:-.3px;
+    padding:0 2px;
   }
 
-  /* Setor: ocupa o espaço disponível */
+  /* Setor — cresce para ocupar espaço disponível, trunca se necessário */
   .sector-switcher{
-    flex:1;
+    flex:1 1 0;
     min-width:0;
-    order:1;
   }
   .sector-switcher-btn{
-    width:100%;max-width:none;min-width:0;
-    padding:5px 8px;font-size:12px;
+    width:100%;
+    padding:0 10px;
+    font-size:12.5px;
     height:34px;
+    min-width:0;
   }
   .sector-switcher-btn .sec-name{
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    min-width:0;flex:1;
   }
 
-  /* Status pill: hidden on mobile */
+  /* Status pill e botões desktop: ocultos */
   #status-pill{ display:none !important; }
-
-  /* Hamburguer: mostrar no mobile; botões desktop: esconder */
-  .tb-mob-only{ display:flex !important; }
   .tb-desk-only{ display:none !important; }
+  .tb-mob-only{ display:flex !important; }
 
-  /* tb-right: apenas o hamburguer, sem quebra de linha */
+  /* tb-right — direita, não cresce */
   .tb-right{
+    flex:0 0 auto;
     gap:0;
-    flex-shrink:0;
-    margin-left:0;
   }
 
-  /* Esconder sector-switcher nas abas sem escala */
+  /* Esconder setor nas abas Financeiro/Config */
   #topbar[data-mob-sec="valores"] .sector-switcher,
   #topbar[data-mob-sec="resumo"] .sector-switcher{
     display:none !important;
