@@ -482,65 +482,125 @@ input,select,textarea{font-family:var(--font);}
   #bot-nav{display:block;}
   #alloc-panel{width:100%;max-width:100%;}
 
-  /* ─── Topbar mobile: [← Mês →] [••• Setor ▾] [☰] ─── */
+  /* ══════════════════════════════════════════
+     TOPBAR MOBILE — AAA
+     Layout: [‹ Maio 2026 ›] flex-grow [Setor ▾] [☰]
+     Todos os elementos com altura e estilo idênticos
+     ══════════════════════════════════════════ */
   #topbar{
-    height:56px;
-    padding:0 12px;
+    height:58px;
+    padding:0 14px;
     gap:8px;
     flex-wrap:nowrap;
     overflow:visible;
     flex-shrink:0;
     align-items:center;
     display:flex;
+    background:var(--s1);
+    border-bottom:1px solid var(--b1);
   }
 
-  /* Navegação de mês — esquerda, não cresce */
+  /* ── Bloco mês: setas + label em um único pill ── */
   .m-nav{
-    display:flex;align-items:center;
-    gap:2px;
+    display:flex;
+    align-items:center;
+    gap:0;
     flex:0 0 auto;
+    background:var(--s2);
+    border:1px solid var(--b1);
+    border-radius:var(--r-sm);
+    overflow:hidden;
   }
   .m-btn{
-    width:30px;height:30px;
-    border-radius:var(--r-sm);
+    width:34px;height:36px;
+    border-radius:0;
+    border:none;
+    background:transparent;
+    color:var(--t2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    transition:background .12s, color .12s;
     flex-shrink:0;
   }
+  .m-btn:hover{ background:var(--s3); color:var(--t1); }
   #month-lbl{
-    font-size:13px;font-weight:700;
+    font-size:13px;
+    font-weight:700;
     white-space:nowrap;
-    letter-spacing:-.3px;
-    padding:0 2px;
+    letter-spacing:-.2px;
+    color:var(--t1);
+    padding:0 6px;
+    min-width:0;
+    user-select:none;
   }
 
-  /* Setor — cresce para ocupar espaço disponível, trunca se necessário */
+  /* Separadores internos do bloco mês */
+  .m-nav .m-btn:first-child{
+    border-right:1px solid var(--b1);
+  }
+  .m-nav .m-btn:last-child{
+    border-left:1px solid var(--b1);
+  }
+
+  /* ── Setor: pill consistente com o bloco mês ── */
   .sector-switcher{
     flex:1 1 0;
     min-width:0;
   }
   .sector-switcher-btn{
     width:100%;
-    padding:0 10px;
+    height:36px;
+    padding:0 10px 0 8px;
     font-size:12.5px;
-    height:34px;
+    font-weight:500;
+    background:var(--s2);
+    border:1px solid var(--b1);
+    border-radius:var(--r-sm);
     min-width:0;
+    gap:7px;
   }
   .sector-switcher-btn .sec-name{
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-    min-width:0;flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+    flex:1;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--t1);
+  }
+  .sector-switcher-btn .sec-dot{
+    width:7px;height:7px;
+    flex-shrink:0;
+  }
+  .sector-switcher-btn .sec-chevron{
+    width:14px;height:14px;
+    flex-shrink:0;
+    opacity:.5;
   }
 
-  /* Status pill e botões desktop: ocultos */
+  /* ── Hamburguer: pill idêntico em altura/estilo ── */
+  .mob-menu-btn{
+    width:36px !important;
+    height:36px !important;
+    border-radius:var(--r-sm) !important;
+    border:1px solid var(--b1) !important;
+    background:var(--s2) !important;
+    color:var(--t2) !important;
+    flex-shrink:0;
+  }
+  .mob-menu-btn svg{
+    width:16px !important;
+    height:16px !important;
+  }
+
+  /* Ocultar elementos desktop */
   #status-pill{ display:none !important; }
   .tb-desk-only{ display:none !important; }
   .tb-mob-only{ display:flex !important; }
+  .tb-right{ flex:0 0 auto; gap:0; margin-left:0; }
 
-  /* tb-right — direita, não cresce */
-  .tb-right{
-    flex:0 0 auto;
-    gap:0;
-  }
-
-  /* Esconder setor nas abas Financeiro/Config */
+  /* Setor some nas abas sem escala */
   #topbar[data-mob-sec="valores"] .sector-switcher,
   #topbar[data-mob-sec="resumo"] .sector-switcher{
     display:none !important;
