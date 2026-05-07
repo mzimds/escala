@@ -1232,10 +1232,12 @@ input,select,textarea{font-family:var(--font);}
 #auth-screen{
   position:fixed;inset:0;z-index:9999;
   background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
+  display:none;
+  align-items:center;justify-content:center;
   padding:20px;
   transition:opacity .3s;
 }
+#auth-screen.visible{display:flex;}
 #auth-screen.hidden{opacity:0;pointer-events:none;}
 
 .auth-box{
@@ -2859,8 +2861,9 @@ async function authEnterApp(user){
     // Esconder loading e auth screen
     document.getElementById('app-loading')?.classList.add('hidden');
     const screen=document.getElementById('auth-screen');
+    screen.classList.remove('visible');
     screen.classList.add('hidden');
-    setTimeout(()=>screen.style.display='none',300);
+    setTimeout(()=>{ screen.style.display='none'; screen.classList.remove('hidden'); },300);
     // Atualizar sidebar
     authUpdateSidebarUser();
     renderHospitalName();
@@ -2871,7 +2874,8 @@ async function authEnterApp(user){
     console.error('Erro ao carregar dados:', e);
     document.getElementById('app-loading')?.classList.add('hidden');
     authShowError('li-err', 'Erro ao carregar dados. Recarregue a página.');
-    document.getElementById('auth-screen')?.classList.remove('hidden');
+    const authScreen = document.getElementById('auth-screen');
+    if(authScreen){ authScreen.style.display='flex'; authScreen.classList.add('visible'); authScreen.classList.remove('hidden'); }
     await _supa.auth.signOut();
   }
 }
@@ -2930,9 +2934,15 @@ _supa.auth.onAuthStateChange(async (event, session) => {
       _appBooted = true;
       if (window.location.hash) history.replaceState(null, '', window.location.pathname);
       await authEnterApp(session.user);
-    } else if (!session) {
-      // Sem sessão — mostrar tela de login
-      document.getElementById('app-loading')?.classList.add('hidden');
+    } else {
+      // Sem sessão — esconder loading e garantir que auth-screen está visível
+      const loading = document.getElementById('app-loading');
+      const authScreen = document.getElementById('auth-screen');
+      if (loading) loading.classList.add('hidden');
+      if (authScreen) {
+        authScreen.style.display = 'flex';
+        authScreen.classList.remove('hidden');
+      }
     }
     return;
   }
@@ -2945,8 +2955,6 @@ _supa.auth.onAuthStateChange(async (event, session) => {
   }
 
   if (event === 'SIGNED_OUT') {
-    // Só redirecionar se foi logout intencional (botão "Sair")
-    // Nunca reagir a SIGNED_OUT disparado pelo SDK durante refresh
     if (window._intentionalLogout) {
       _appBooted = false;
       location.reload();
